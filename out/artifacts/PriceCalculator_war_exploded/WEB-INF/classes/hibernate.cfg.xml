@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>  
+<!DOCTYPE hibernate-configuration PUBLIC  
+         "-//Hibernate/Hibernate Configuration DTD 3.0//EN"  
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">  
+  
+<hibernate-configuration>  
+    <session-factory>  
+  
+        <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>  
+        <property name="show_sql">true</property>  
+        <property name="hbm2ddl.auto">update</property>
+
+        <property name="show_sql">false</property>
+        <!-- 格式化SQL语句 -->
+        <property name="format_sql">true</property>
+        <!-- 驱动 -->
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <!-- 数据库url-->
+        <property name="hibernate.connection.url">localhost:8080/PriceCalculator?characterEncoding=utf8</property>
+        <!-- 访问数据库用户名 -->
+        <property name="hibernate.connection.username">root</property>
+        <!-- 访问数据库密码 -->
+        <property name="hibernate.connection.password">123456</property>
+        <!-- 方言（为了更好的操作具体的数据库）
+            如果使用的mysql数据版本在5.5之后的话，方言通常建议使用MySQL5InnoDBDialect
+            MySQLDialect 不支持事务
+            MySQLInnoDBDialect 支持事务
+         -->
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+        <property name="hbm2ddl.auto">update</property>
+
+
+        <mapping class="com.model.Craft"></mapping>
+        <mapping class="com.model.Paper"></mapping>
+        <mapping class="com.model.PrintPrice"></mapping>
+        <mapping class="com.model.Size"></mapping>
+    </session-factory>
+</hibernate-configuration>

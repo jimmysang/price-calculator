@@ -1,0 +1,9 @@
+@charset "utf-8";
+.datagrid-header-row, .datagrid-row{
+    height: 30px;
+    line-height: 30px;
+}
+.l-btn-text{
+    font-size: 13px;
+}
+

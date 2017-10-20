@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="easyui/bootstrap/easyui.css"/>
+    <link rel="stylesheet" href="easyui/icon.css"/>
+    <script src="easyui/jquery-2.1.1.min.js"></script>
+    <script src="easyui/jquery.easyui.min.js"></script>
+    <link rel="stylesheet" href="css/table.css"/>
+</head>
+<body>
+<table id="dg" class="easyui-datagrid" title="后道参数表" style="width:800px;height:640px"
+       data-options="
+                iconCls: 'icon-edit',
+                singleSelect: true,
+                 fitColumns:true,
+                toolbar: '#tb',
+                url: 'parameter/listCraft.do',
+                method: 'get',
+                onClickCell: onClickCell
+            "><thead>
+<tr>
+    <th data-options="field:'id',width:50">编号</th>
+    <th data-options="field:'name',width:80,editor:'textbox'">后道类型</th>
+    <th data-options="field:'key1',width:80,editor:'textbox'">关键字1</th>
+    <th data-options="field:'key2',width:80,editor:'textbox'">关键字2</th>
+    <th data-options="field:'key3',width:100,editor:'textbox'">关键字3</th>
+    <th data-options="field:'plateStarting',width:50,editor:'numberbox'">版起价</th>
+    <th data-options="field:'plateUnitPrice',width:50,editor:'numberbox'">版单价</th>
+    <th data-options="field:'materialStarting',width:60,editor:'numberbox'">材料起价</th>
+    <th data-options="field:'materialUnitPrice',width:60,editor:{type:'numberbox',options:{precision:2}}">材料单价</th>
+    <th data-options="field:'manualStarting',width:60,editor:'numberbox'">工费起价</th>
+    <th data-options="field:'manualUnitPrice',width:60,editor:{type:'numberbox',options:{precision:3}}">工费单价</th>
+    <th data-options="field:'note',width:100,editor:'textbox'">备注</th>
+</tr>
+</thead>
+</table>
+
+<div id="tb" style="height:auto">
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="append()">添加</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="removeit()">删除</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="accept()">确认</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true" onclick="reject()">取消</a>
+</div>
+
+<script type="text/javascript">
+    var editIndex = undefined;
+    function endEditing(){
+        if (editIndex == undefined){return true}
+        if ($('#dg').datagrid('validateRow', editIndex)){
+//            var ed = $('#dg').datagrid('getEditor', {index:editIndex,field:'id'});
+//            var productname = $(ed.target).combobox('getText');
+//            $('#dg').datagrid('getRows')[editIndex]['productname'] = productname;
+            $('#dg').datagrid('endEdit', editIndex);
+//            editIndex = undefined;
+            return true;
+        } else {
+            return false;
+        }
+    }
+    function onClickCell(index, field){
+        if (editIndex != index){
+            if (endEditing()){
+                $('#dg').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                var ed = $('#dg').datagrid('getEditor', {index:index,field:field});
+                if (ed){
+                    ($(ed.target).data('textbox') ? $(ed.target).textbox('textbox') : $(ed.target)).focus();
+                }
+                editIndex = index;
+            } else {
+                $('#dg').datagrid('selectRow', editIndex);
+            }
+        }
+    }
+    function append(){
+        if (endEditing()){
+            $('#dg').datagrid('appendRow',{status:'P'});
+            editIndex = $('#dg').datagrid('getRows').length-1;
+            $('#dg').datagrid('selectRow', editIndex)
+                    .datagrid('beginEdit', editIndex);
+        }
+    }
+    function removeit(){
+        if (editIndex == undefined){return}
+        $.post('parameter/deleteCraft.do',{'data':JSON.stringify($('#dg').datagrid('getSelected'))},function(result){
+        })
+        $('#dg').datagrid('cancelEdit', editIndex)
+                .datagrid('deleteRow', editIndex);
+        editIndex = undefined;
+    }
+    function accept(){
+        if (endEditing()){
+            $('#dg').datagrid('acceptChanges');
+            $.post('parameter/updateCraft.do',{'data':JSON.stringify($('#dg').datagrid('getSelected'))},function(result){
+                alert("操作成功!")
+            })
+        }
+    }
+    function reject(){
+        $('#dg').datagrid('rejectChanges');
+        editIndex = undefined;
+    }
+//    function getChanges(){
+//        var rows = $('#dg').datagrid('getChanges');
+//        alert(rows.length+' rows are changed!');
+//    }
+</script>
+</body>
+</html>

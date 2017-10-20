@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <script src="easyui/jquery-2.1.1.min.js"></script>
+    <script src="easyui/jquery.easyui.min.js"></script>
+    <link rel="stylesheet" href="css/login.css"/>
+</head>
+<body>
+<div class="login_bg">
+    <div class="form">
+        <form name="loginForm" id="login_form" method="post">
+            <h2>登录</h2>
+
+            <div class="div_user"><span></span>
+                <input class="username" name="userName" type="text" placeholder="用户名"/>
+            </div>
+            <div style="line-height:30px; text-indent:5px;color:#F30" id="loginTips1">&nbsp;</div>
+            <div class="div_pw"><span></span>
+                <input class="pw" name="password" type="password" placeholder="密码"/>
+            </div>
+            <div style="line-height:30px; text-indent:5px;color:#F30" id="loginTips2">&nbsp;</div>
+            <div>
+                <input class="login_btn" id="loginBtn" type="button" value="登录"/>
+            </div>
+        </form>
+        <!--</div>-->
+    </div>
+
+</div>
+<script>
+    $(function () {
+//回车键登录
+        $(document).keydown(function (e) {
+            var theEvent = window.event || e;
+            var code = theEvent.keyCode || theEvent.which;
+            if (code == 13) {
+                $("#loginBtn").click();
+            }
+        });
+        $("#loginBtn").click(function () {
+            var form = $('#login_form');
+            form.form({
+                url:'/CalPrice/user/login.do',
+                ajax:true,
+                onSubmit:function(){
+                    var user_name = $('input[name="userName"]').val();
+                    var password = $('input[name="password"]').val();
+                    if(!user_name){
+                        alert('用户名不能是空！');
+                        return false;
+                    }
+                    if(!password){
+                        alert('密码不能是空！');
+                        return false;
+                    }
+                    return true;
+                },
+                success:function(result){
+                    var obj = JSON.parse(result);
+//                    alert(obj.result);
+                    if(obj.result){
+                        window.location.href="index.jsp";
+                    }else{
+                      alert("登录失败！")
+                    }
+                }
+            });
+            form.submit();
+        });
+        ;
+        var height = $(document).height();
+        $('.login_bg').css('height', height);
+    })
+</script>
+</body>
+</html>
